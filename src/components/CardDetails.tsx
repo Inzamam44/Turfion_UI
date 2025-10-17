@@ -75,23 +75,23 @@ const CardDetails: React.FC = () => {
 
   const LoginPromptModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
-        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Login Required</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full">
+        <div className="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Login Required</h2>
           <button
             onClick={() => setShowLoginPrompt(false)}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         </div>
         <div className="p-4 sm:p-6">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CalendarCheck className="w-8 h-8 text-blue-600" />
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CalendarCheck className="w-8 h-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to Book?</h3>
-            <p className="text-gray-600 text-sm sm:text-base">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Ready to Book?</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
               You need to be logged in to make a booking. Please sign in to continue with your reservation.
             </p>
           </div>
@@ -111,7 +111,7 @@ const CardDetails: React.FC = () => {
             </button>
             <button
               onClick={() => setShowLoginPrompt(false)}
-              className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+              className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 font-medium"
             >
               Maybe Later
             </button>
@@ -136,16 +136,16 @@ const CardDetails: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/')}
-          className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+          className="mb-6 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to home
         </button>
-        <div className="text-center bg-white rounded-xl shadow-lg p-8 sm:p-12">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+        <div className="text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">
             {error || 'Card not found'}
           </h2>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">
+          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base">
             The card you're looking for doesn't exist or has been removed.
           </p>
           <button
@@ -164,13 +164,13 @@ const CardDetails: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <button
         onClick={() => navigate('/')}
-        className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium"
+        className="mb-6 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 font-medium"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to home
       </button>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
         <div className="relative h-64 sm:h-80 md:h-96 lg:h-[500px]">
           <img
             src={card.imageUrl}
@@ -214,9 +214,9 @@ const CardDetails: React.FC = () => {
               {/* Description */}
               {card.description && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900">About This Venue</h2>
-                  <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
-                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{card.description}</p>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900 dark:text-white">About This Venue</h2>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 sm:p-6">
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">{card.description}</p>
                   </div>
                 </div>
               )}
@@ -224,13 +224,13 @@ const CardDetails: React.FC = () => {
               {/* Location Map */}
               {card.location && (
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900">Location</h2>
-                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Location</h2>
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
                     <div className="flex items-center mb-4">
-                      <MapPin className="w-5 h-5 text-gray-600 mr-2 flex-shrink-0" />
-                      <span className="text-gray-700 font-medium text-sm sm:text-base">{card.location}</span>
+                      <MapPin className="w-5 h-5 text-gray-600 dark:text-gray-400 mr-2 flex-shrink-0" />
+                      <span className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">{card.location}</span>
                     </div>
-                    <div className="rounded-lg overflow-hidden border border-gray-200">
+                    <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
                       <iframe
                         src={getGoogleMapsEmbedUrl(card.location)}
                         width="100%"
@@ -251,14 +251,14 @@ const CardDetails: React.FC = () => {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Booking Card */}
-              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200 sticky top-4">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Book This Venue</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700 sticky top-4">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">Book This Venue</h3>
                 
                 {card.pricePerHour > 0 && (
                   <div className="mb-4">
-                    <div className="text-2xl sm:text-3xl font-bold text-green-600">
+                    <div className="text-2xl sm:text-3xl font-bold text-green-600 dark:text-green-400">
                       ₹{card.pricePerHour}
-                      <span className="text-base sm:text-lg font-normal text-gray-500">/hour</span>
+                      <span className="text-base sm:text-lg font-normal text-gray-500 dark:text-gray-400">/hour</span>
                     </div>
                   </div>
                 )}
@@ -273,53 +273,53 @@ const CardDetails: React.FC = () => {
 
                 <button
                   onClick={() => navigate('/')}
-                  className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium text-sm sm:text-base"
+                  className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 font-medium text-sm sm:text-base"
                 >
                   Back to Home
                 </button>
               </div>
 
               {/* Venue Details */}
-              <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Venue Details</h3>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4">Venue Details</h3>
                 
                 <div className="space-y-4">
                   <div className="flex items-center">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Sport Type</h4>
-                      <p className="text-gray-600 text-sm">{card.type}</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">Sport Type</h4>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">{card.type}</p>
                     </div>
                   </div>
                   
                   {(card.openingTime || card.closingTime) && (
                     <div className="flex items-center">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                        <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Operating Hours</h4>
-                        <p className="text-gray-600 text-sm">
-                          {card.openingTime && card.closingTime 
-                            ? `${card.openingTime} - ${card.closingTime}`
-                            : card.openingTime || card.closingTime
-                          }
-                        </p>
-                      </div>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                      <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">Operating Hours</h4>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        {card.openingTime && card.closingTime 
+                          ? `${card.openingTime} - ${card.closingTime}`
+                          : card.openingTime || card.closingTime
+                        }
+                      </p>
+                    </div>
                     </div>
                   )}
 
                   {card.location && (
                     <div className="flex items-center">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                        <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-semibold text-gray-900 text-sm sm:text-base">Location</h4>
-                        <p className="text-gray-600 text-sm break-words">{card.location}</p>
-                      </div>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                      <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">Location</h4>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm break-words">{card.location}</p>
+                    </div>
                     </div>
                   )}
                 </div>

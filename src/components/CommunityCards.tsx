@@ -6,6 +6,7 @@ import { Clock, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import SearchAndFilters, { FilterOptions } from './SearchAndFilters';
 import { GlowCard } from './ui/spotlight-card';
 import { LiquidButton } from "./ui/liquid-glass-button";
+import LoadingSpinner from './LoadingSpinner';
 
 type CardData = {
   id: string;
@@ -115,6 +116,7 @@ export default function CommunityCards() {
 
   useEffect(() => {
     let unsubscribe: (() => void) | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
 
     const setupRealtimeListener = () => {
       try {
@@ -125,7 +127,7 @@ export default function CommunityCards() {
         const q = query(
           collection(db, 'cards'),
           orderBy('createdAt', 'desc'),
-          limit(100) // Limit to prevent loading too many cards at once
+          limit(50) // Reduced limit for better performance
         );
 
         unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -138,8 +140,13 @@ export default function CommunityCards() {
             } as CardData);
           });
 
-          setAllCards(cardsData);
-          setLoading(false);
+          // Debounce updates to prevent excessive re-renders
+          if (timeoutId) clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            setAllCards(cardsData);
+            setLoading(false);
+          }, 100);
+
         }, (err) => {
           console.error('Error in real-time listener:', err);
           setError('Unable to load community cards at the moment.');
@@ -153,10 +160,13 @@ export default function CommunityCards() {
       }
     };
 
-    setupRealtimeListener();
+    // Delay initial load to improve perceived performance
+    const initialTimeout = setTimeout(setupRealtimeListener, 100);
 
     return () => {
       if (unsubscribe) unsubscribe();
+      if (timeoutId) clearTimeout(timeoutId);
+      clearTimeout(initialTimeout);
     };
   }, []);
 
@@ -183,9 +193,7 @@ export default function CommunityCards() {
     return (
       <div className="mb-12">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6">Community Cards</h2>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        </div>
+        <LoadingSpinner size="md" className="py-12" />
       </div>
     );
   }
@@ -203,7 +211,7 @@ export default function CommunityCards() {
   }
 
   return (
-    <div className="mb-12">
+    <div className="mb-12 mt-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Community Cards</h2>
         <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -248,9 +256,11 @@ export default function CommunityCards() {
                       src={card.imageUrl} 
                       alt={card.title} 
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+                        target.src = 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1';
                       }}
                     />
                     <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded text-xs sm:text-sm">

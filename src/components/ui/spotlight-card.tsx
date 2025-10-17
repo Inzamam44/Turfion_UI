@@ -164,7 +164,7 @@ const GlowCard: React.FC<GlowCardProps> = ({
         style={getInlineStyles()}
         className={`
           ${getSizeClasses()}
-          rounded-lg shadow-lg overflow-hidden bg-white relative
+          rounded-[1.25rem] shadow-lg overflow-hidden bg-white dark:bg-gray-800 relative
           ${className}
         `}
       >

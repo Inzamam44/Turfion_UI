@@ -1,25 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense, lazy } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import Calendar from './components/DatePicker/Calendar';
-import Login from './components/Login';
-import SignUp from './components/SignUp';
-import SportsGroundDetails from './components/SportsGroundDetails';
-import CardDetails from './components/CardDetails';
-import BookingCalendar from './components/BookingCalendar';
-import BookingReceipt from './components/BookingReceipt';
-import Profile from './components/Profile';
-import MfaSettings from './components/MfaSettings';
-import Dashboard from './components/Dashboard';
-import CommunityCards from './components/CommunityCards';
-import Games from './components/Games';
 import HeroSection from './components/HeroSection';
 import Footer from './components/Footer';
+import LoadingSpinner from './components/LoadingSpinner';
+
+// Lazy load components for better performance
+const Login = lazy(() => import('./components/Login'));
+const SignUp = lazy(() => import('./components/SignUp'));
+const SportsGroundDetails = lazy(() => import('./components/SportsGroundDetails'));
+const CardDetails = lazy(() => import('./components/CardDetails'));
+const BookingCalendar = lazy(() => import('./components/BookingCalendar'));
+const BookingReceipt = lazy(() => import('./components/BookingReceipt'));
+const Profile = lazy(() => import('./components/Profile'));
+const MfaSettings = lazy(() => import('./components/MfaSettings'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const CommunityCards = lazy(() => import('./components/CommunityCards'));
+const Games = lazy(() => import('./components/Games'));
 import { useAuth } from './contexts/AuthContext';
 import { LogOut, User, ChevronDown, BarChart3, LogIn, Menu, X, Shield, AlertTriangle } from 'lucide-react';
 import { SportsGround } from './types';
 import { isFirebaseInitialized } from './lib/firebase';
 import { Component as EtheralShadow } from './components/ui/etheral-shadow';
 import { ThemeToggle } from './components/ui/theme-toggle';
+import BrandLogo from './images/logo.png';
 
 const sportsGrounds: SportsGround[] = [
   {
@@ -419,15 +423,22 @@ function App() {
         sizing="fill"
         style={{ position: 'fixed', inset: 0, zIndex: 0 }}
       />
-      <div className="min-h-screen bg-white/60 dark:bg-gray-900/80 transition-colors duration-200 relative z-10">
+      {/* Subtle background watermark */}
+      <div aria-hidden className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 1 }}>
+        <div
+          className="w-[60vmin] h-[60vmin] opacity-5 bg-center bg-no-repeat bg-contain"
+          style={{ backgroundImage: `url(${BrandLogo})` }}
+        />
+      </div>
+      <div className="min-h-screen bg-background transition-colors duration-200 relative z-10 pt-20">
         <nav
           className={`z-40 p-5 fixed left-0 w-full transition-all duration-500 ease-in-out
             ${navbarVisible ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-full pointer-events-none'}
           `}
           style={{ top: 0 }}
         >
-          <div className="container mx-auto max-w-4xl">
-            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full shadow-xl px-4 sm:px-8 py-4 border border-white/20 dark:border-gray-700/20">
+          <div className="container mx-auto max-w-5xl">
+            <div className="backdrop-blur-xl bg-card/80 border border-border rounded-full shadow-[0_2px_24px_rgba(0,0,0,0.08)] px-4 sm:px-6 py-3">
               <div className="flex justify-between items-center">
                 <a 
                   href="/"
@@ -437,16 +448,29 @@ function App() {
                     setShowLogin(false);
                     setShowSignUp(false);
                   }} 
-                  className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-purple-600 hover:to-blue-600 px-2 sm:px-4 py-2 rounded-full transition-all duration-200"
+                  className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-full group"
                 >
-                  TURFION
+                  <img
+                    src={BrandLogo}
+                    alt="Turfion"
+                    className="h-6 sm:h-7 object-contain"
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement | null;
+                      if (fallback) fallback.style.display = 'inline-block';
+                    }}
+                  />
+                  <span className="font-extrabold tracking-tight text-xl sm:text-2xl bg-gradient-to-r from-[hsl(217_89%_45%)] via-[hsl(211_86%_50%)] to-[hsl(192_100%_50%)] bg-clip-text text-transparent group-hover:brightness-110 transition" style={{ fontFamily: 'Amaranth, sans-serif' }}>
+                    TURFION
+                  </span>
                 </a>
                 
                 {/* Desktop Navigation */}
                 <div className="hidden lg:flex items-center space-x-2">
                   <button
                     onClick={() => navigate('/games')}
-                    className="text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white px-4 py-2 rounded-full transition-all duration-200"
+                    className="px-4 py-2 rounded-full text-foreground hover:text-primary-foreground bg-transparent hover:bg-primary/90 transition-all duration-200 shadow-none hover:shadow-[0_8px_30px_rgba(13,71,161,0.25)]"
                   >
                     Join Games
                   </button>
@@ -455,7 +479,7 @@ function App() {
                     <div className="relative" ref={userDropdownRef}>
                       <button 
                         onClick={toggleUserDropdown}
-                        className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white px-4 py-2 rounded-full transition-all duration-200"
+                        className="flex items-center space-x-2 text-foreground px-4 py-2 rounded-full hover:bg-secondary/20 transition-all duration-200"
                       >
                         <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                           {userProfile?.photoURL ? (
@@ -470,7 +494,7 @@ function App() {
                               }}
                             />
                           ) : null}
-                          <div className={`w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center ${userProfile?.photoURL ? 'hidden' : ''}`}>
+                          <div className={`w-full h-full bg-gradient-to-r from-[hsl(217_89%_45%)] to-[hsl(211_86%_55%)] flex items-center justify-center ${userProfile?.photoURL ? 'hidden' : ''}`}>
                             <User className="w-4 h-4 text-white" />
                           </div>
                         </div>
@@ -486,7 +510,7 @@ function App() {
                         setShowLogin(true);
                         setShowSignUp(false);
                       }}
-                      className="text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:text-white px-4 py-2 rounded-full transition-all duration-200"
+                      className="px-4 py-2 rounded-full text-primary-foreground bg-primary hover:brightness-110 transition-all duration-200 shadow-[0_8px_30px_rgba(0,229,255,0.25)]"
                       data-login-trigger
                     >
                       Login
@@ -512,47 +536,65 @@ function App() {
         {/* Mobile Menu */}
         {showMobileMenu && <MobileMenu />}
 
-        <div className="pt-4">
+        <div className="pt-0">
           {showLogin && !user ? (
-            <Login 
-              onSignUpClick={() => {
-                setShowLogin(false);
-                setShowSignUp(true);
-              }}
-              onSuccess={handleLoginSuccess}
-            />
+            <Suspense fallback={<LoadingSpinner size="lg" className="min-h-screen" />}>
+              <Login 
+                onSignUpClick={() => {
+                  setShowLogin(false);
+                  setShowSignUp(true);
+                }}
+                onSuccess={handleLoginSuccess}
+              />
+            </Suspense>
           ) : showSignUp && !user ? (
-            <SignUp 
-              onLoginClick={() => {
-                setShowSignUp(false);
-                setShowLogin(true);
-              }}
-              onSuccess={handleLoginSuccess}
-            />
+            <Suspense fallback={<LoadingSpinner size="lg" className="min-h-screen" />}>
+              <SignUp 
+                onLoginClick={() => {
+                  setShowSignUp(false);
+                  setShowLogin(true);
+                }}
+                onSuccess={handleLoginSuccess}
+              />
+            </Suspense>
           ) : requiresAuth && !user ? (
             <LoginPrompt />
           ) : (
-            <Routes>
-              <Route path="/ground/:id" element={<SportsGroundDetails grounds={sportsGrounds} />} />
-              <Route path="/card/:id" element={<CardDetails />} />
-              <Route path="/book/:id" element={<BookingCalendar />} />
-              <Route path="/receipt/:id" element={<BookingReceipt isModal={false} />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/mfa-settings" element={<MfaSettings />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/games" element={<Games />} />
-              <Route path="/" element={
-                <div className="container mx-auto px-4 py-8 pt-32 mt-5">
-                  {/* Hero Section */}
-                  <HeroSection />
-                  
-                  {/* Community Cards Section */}
-                  <div id="cards">
-                    <CommunityCards />
-                  </div>
-                </div>
-              } />
-            </Routes>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+              >
+                <Suspense fallback={<LoadingSpinner size="lg" className="min-h-screen" />}>
+                  <Routes location={location}>
+                    <Route path="/ground/:id" element={<SportsGroundDetails grounds={sportsGrounds} />} />
+                    <Route path="/card/:id" element={<CardDetails />} />
+                    <Route path="/book/:id" element={<BookingCalendar />} />
+                    <Route path="/receipt/:id" element={<BookingReceipt isModal={false} />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/mfa-settings" element={<MfaSettings />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/games" element={<Games />} />
+                    <Route path="/" element={
+                      <div className="container mx-auto px-4 py-8">
+                        {/* Hero Section */}
+                        <HeroSection />
+                        
+                        {/* Community Cards Section */}
+                        <div id="cards">
+                          <Suspense fallback={<LoadingSpinner size="md" className="py-12" />}>
+                            <CommunityCards />
+                          </Suspense>
+                        </div>
+                      </div>
+                    } />
+                  </Routes>
+                </Suspense>
+              </motion.div>
+            </AnimatePresence>
           )}
         </div>
 

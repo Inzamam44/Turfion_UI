@@ -502,7 +502,7 @@ const Dashboard: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Please log in to access your dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Please log in to access your dashboard</h2>
         </div>
       </div>
     );
@@ -544,16 +544,16 @@ const Dashboard: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
         <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-          <p className="text-gray-600">Welcome back, {userProfile?.displayName || user.email}</p>
+          <p className="text-gray-600 dark:text-gray-400">Welcome back, {userProfile?.displayName || user.email}</p>
           {userProfile?.role && getRoleTag(userProfile.role)}
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white rounded-xl shadow-lg mb-8">
-        <div className="border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-8">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex space-x-2 sm:space-x-8 px-4 sm:px-6 overflow-x-auto" aria-label="Tabs">
             {tabs.map((tab) => {
               const Icon = tab.icon;
@@ -563,8 +563,8 @@ const Dashboard: React.FC = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`py-4 px-1 border-b-2 font-medium text-xs sm:text-sm flex items-center space-x-2 transition-colors duration-200 whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -580,25 +580,25 @@ const Dashboard: React.FC = () => {
           {/* Your Bookings Tab */}
           {activeTab === 'bookings' && (
             <div className="space-y-6">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Your Bookings</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Your Bookings</h2>
               
               {/* Upcoming Bookings */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Upcoming Bookings ({upcomingBookings.length})</h3>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Upcoming Bookings ({upcomingBookings.length})</h3>
                 {upcomingBookings.length === 0 ? (
-                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No upcoming bookings</p>
+                  <div className="text-center py-8 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <Calendar className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">No upcoming bookings</p>
                   </div>
                 ) : (
                   <>
                     <div className="space-y-4">
                       {getPaginatedItems(upcomingBookings, bookingsPage).map((booking) => (
-                        <div key={booking.id} className="border border-gray-200 rounded-lg p-4">
+                        <div key={booking.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-800">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
                             <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900">{booking.cardTitle || 'Unknown Card'}</h4>
-                              <div className="text-sm text-gray-600 mt-1 space-y-1">
+                              <h4 className="font-semibold text-gray-900 dark:text-white">{booking.cardTitle || 'Unknown Card'}</h4>
+                              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1 space-y-1">
                                 <div className="flex items-center">
                                   <Calendar className="w-4 h-4 mr-2" />
                                   <span>{formatDate(booking.date)}</span>
@@ -687,20 +687,20 @@ const Dashboard: React.FC = () => {
 
               {/* Completed Bookings */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Completed Bookings ({completedBookings.length})</h3>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Completed Bookings ({completedBookings.length})</h3>
                 {completedBookings.length === 0 ? (
-                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                    <CheckCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">No completed bookings</p>
+                  <div className="text-center py-8 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <CheckCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-500 dark:text-gray-400">No completed bookings</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {getPaginatedItems(completedBookings, bookingsPage).map((booking) => (
-                      <div key={booking.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                      <div key={booking.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-700">{booking.cardTitle || 'Unknown Card'}</h4>
-                            <div className="text-sm text-gray-500 mt-1 space-y-1">
+                            <h4 className="font-semibold text-gray-700 dark:text-gray-300">{booking.cardTitle || 'Unknown Card'}</h4>
+                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 space-y-1">
                               <div className="flex items-center">
                                 <Calendar className="w-4 h-4 mr-2" />
                                 <span>{formatDate(booking.date)}</span>
@@ -741,12 +741,12 @@ const Dashboard: React.FC = () => {
           {/* Notifications Tab */}
           {activeTab === 'notifications' && (
             <div className="space-y-6">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Notifications</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Notifications</h2>
               
               {notifications.length === 0 ? (
-                <div className="text-center py-12 bg-gray-50 rounded-lg">
-                  <Bell className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">No notifications</p>
+                <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <Bell className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-gray-400 text-lg">No notifications</p>
                 </div>
               ) : (
                 <>
@@ -755,15 +755,15 @@ const Dashboard: React.FC = () => {
                       <div 
                         key={notification.id} 
                         className={`border rounded-lg p-4 ${
-                          notification.read ? 'border-gray-200 bg-white' : 'border-blue-200 bg-blue-50'
+                          notification.read ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800' : 'border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20'
                         }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">{notification.title}</h4>
-                            <p className="text-gray-600 mt-1 text-sm sm:text-base">{notification.message}</p>
+                            <h4 className="font-semibold text-gray-900 dark:text-white">{notification.title}</h4>
+                            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">{notification.message}</p>
                             {(notification.joinedByDisplayName || notification.joinedByEmail || notification.bookedByDisplayName || notification.bookedByEmail) && (
-                              <div className="mt-2 text-sm text-blue-600">
+                              <div className="mt-2 text-sm text-blue-600 dark:text-blue-400">
                                 <p><strong>Player:</strong> {notification.joinedByDisplayName || notification.bookedByDisplayName || notification.joinedByEmail || notification.bookedByEmail}</p>
                                 {(notification.joinedByPhoneNumber || notification.bookedByPhoneNumber) ? (
                                   <p><strong>Phone:</strong> {notification.joinedByPhoneNumber || notification.bookedByPhoneNumber}</p>
@@ -778,7 +778,7 @@ const Dashboard: React.FC = () => {
                                 )}
                               </div>
                             )}
-                            <p className="text-xs text-gray-500 mt-2">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                               {formatTime(notification.createdAt)}
                             </p>
                           </div>
@@ -786,14 +786,14 @@ const Dashboard: React.FC = () => {
                             {!notification.read && (
                               <button
                                 onClick={() => handleMarkNotificationAsRead(notification.id)}
-                                className="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 border border-blue-300 rounded hover:bg-blue-50 transition-colors duration-200"
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm px-3 py-1 border border-blue-300 dark:border-blue-600 rounded hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-200"
                               >
                                 Mark as read
                               </button>
                             )}
                             <button
                               onClick={() => handleDeleteNotification(notification.id)}
-                              className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded transition-colors duration-200"
+                                className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors duration-200"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -855,17 +855,17 @@ const Dashboard: React.FC = () => {
           {/* Requests Tab (Admin only) */}
           {activeTab === 'requests' && hasRole('admin') && (
             <div className="space-y-6">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Requests</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Requests</h2>
               
               {/* Request Type Tabs */}
-              <div className="border-b border-gray-200">
+              <div className="border-b border-gray-200 dark:border-gray-700">
                 <nav className="flex space-x-8" aria-label="Request Types">
                   <button
                     onClick={() => setActiveRequestTab('host-requests')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
                       activeRequestTab === 'host-requests'
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                     }`}
                   >
                     Host Requests ({hostRequests.length})
@@ -874,8 +874,8 @@ const Dashboard: React.FC = () => {
                     onClick={() => setActiveRequestTab('mfa-reset')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
                       activeRequestTab === 'mfa-reset'
-                        ? 'border-blue-500 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        ? 'border-blue-500 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                     }`}
                   >
                     MFA Reset Requests ({mfaResetRequests.length})
@@ -887,9 +887,9 @@ const Dashboard: React.FC = () => {
               {activeRequestTab === 'host-requests' && (
                 <div>
                   {hostRequests.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-500 text-lg">No host requests</p>
+                    <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                      <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-500 dark:text-gray-400 text-lg">No host requests</p>
                     </div>
                   ) : (
                     <>
@@ -918,9 +918,9 @@ const Dashboard: React.FC = () => {
               {activeRequestTab === 'mfa-reset' && (
                 <div>
                   {mfaResetRequests.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <Shield className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                      <p className="text-gray-500 text-lg">No MFA reset requests</p>
+                    <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                      <Shield className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-500 dark:text-gray-400 text-lg">No MFA reset requests</p>
                     </div>
                   ) : (
                     <>
@@ -1011,41 +1011,41 @@ const RequestItem: React.FC<{
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 sm:p-6">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 sm:p-6 bg-white dark:bg-gray-800">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-2 sm:space-y-0">
         <div className="flex items-center space-x-3">
           {getRequestTypeIcon(request.requestType)}
           <div>
-            <h4 className="font-semibold text-gray-900">
+            <h4 className="font-semibold text-gray-900 dark:text-white">
               {getRequestTypeLabel(request.requestType)}
             </h4>
-            <p className="text-sm text-gray-600">From: {request.userDisplayName || request.userEmail}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">From: {request.userDisplayName || request.userEmail}</p>
             {request.userPhoneNumber && (
-              <p className="text-sm text-gray-500">📞 {request.userPhoneNumber}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">📞 {request.userPhoneNumber}</p>
             )}
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {formatTime(request.createdAt)}
             </p>
           </div>
         </div>
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-          request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-          request.status === 'approved' ? 'bg-green-100 text-green-800' :
-          'bg-red-100 text-red-800'
+          request.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300' :
+          request.status === 'approved' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' :
+          'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
         }`}>
           {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
         </span>
       </div>
       
       <div className="mb-4">
-        <h5 className="font-medium text-gray-800 mb-2">Message:</h5>
-        <p className="text-gray-600 bg-gray-50 p-3 rounded text-sm">{request.message}</p>
+        <h5 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Message:</h5>
+        <p className="text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded text-sm">{request.message}</p>
       </div>
 
       {request.cardData && (
         <div className="mb-4">
-          <h5 className="font-medium text-gray-800 mb-2">Card Details:</h5>
-          <div className="bg-gray-50 p-3 rounded space-y-2 text-sm">
+          <h5 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Card Details:</h5>
+          <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded space-y-2 text-sm text-gray-700 dark:text-gray-300">
             <p><strong>Title:</strong> {request.cardData.title}</p>
             <p><strong>Type:</strong> {request.cardData.type}</p>
             <p><strong>Location:</strong> {request.cardData.location}</p>
@@ -1060,8 +1060,8 @@ const RequestItem: React.FC<{
 
       {request.adminResponse && (
         <div className="mb-4">
-          <h5 className="font-medium text-gray-800 mb-2">Admin Response:</h5>
-          <p className="text-gray-600 bg-blue-50 p-3 rounded border border-blue-200 text-sm">{request.adminResponse}</p>
+          <h5 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Admin Response:</h5>
+          <p className="text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 p-3 rounded border border-blue-200 dark:border-blue-700 text-sm">{request.adminResponse}</p>
         </div>
       )}
 
@@ -1077,7 +1077,7 @@ const RequestItem: React.FC<{
           ) : (
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Admin Response (Required) *
                 </label>
                 <textarea
@@ -1085,7 +1085,7 @@ const RequestItem: React.FC<{
                   onChange={(e) => setAdminResponse(e.target.value)}
                   placeholder="Provide your response to the user..."
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">

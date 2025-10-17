@@ -367,10 +367,10 @@ const BookingCalendar: React.FC = () => {
           disabled={isPast}
           className={`
             h-10 w-10 sm:h-12 sm:w-12 rounded-lg flex items-center justify-center text-sm transition-all duration-200
-            ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-blue-100'}
-            ${isToday && !isSelected ? 'border-2 border-blue-500' : ''}
-            ${isSelected ? 'bg-blue-500 text-white hover:bg-blue-600' : ''}
-            ${!isPast && !isSelected ? 'hover:bg-gray-100' : ''}
+            ${isPast ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed' : 'hover:bg-blue-100 dark:hover:bg-blue-900/30'}
+            ${isToday && !isSelected ? 'border-2 border-blue-500 dark:border-blue-400' : ''}
+            ${isSelected ? 'bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700' : ''}
+            ${!isPast && !isSelected ? 'hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100' : 'text-gray-700 dark:text-gray-300'}
           `}
         >
           {day}
@@ -393,12 +393,12 @@ const BookingCalendar: React.FC = () => {
     const slotOptions = [1, 2, 3, 4, 5, 6, 7, 8];
     
     return (
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 sm:p-6 mb-6 border border-blue-200">
-        <h3 className="text-base sm:text-lg font-semibold mb-4 flex items-center text-blue-800">
-          <Users className="w-5 h-5 mr-2 text-blue-600" />
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-4 sm:p-6 mb-6 border border-blue-200 dark:border-blue-700">
+        <h3 className="text-base sm:text-lg font-semibold mb-4 flex items-center text-blue-800 dark:text-blue-300">
+          <Users className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
           Slots Open for Other Players (Optional)
         </h3>
-        <p className="text-xs sm:text-sm text-blue-700 mb-4">
+        <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 mb-4">
           Select how many slots you want to keep open for other players to join your game
         </p>
         
@@ -410,8 +410,8 @@ const BookingCalendar: React.FC = () => {
               className={`
                 p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-2
                 ${selectedOpenSlots === num 
-                  ? 'border-blue-500 bg-blue-100 text-blue-700 shadow-md' 
-                  : 'border-gray-200 hover:border-blue-300 text-gray-600 hover:bg-white'
+                  ? 'border-blue-500 dark:border-blue-400 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-md' 
+                  : 'border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800'
                 }
               `}
             >
@@ -420,7 +420,7 @@ const BookingCalendar: React.FC = () => {
                   <div
                     key={i}
                     className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${
-                      selectedOpenSlots === num ? 'bg-blue-500' : 'bg-gray-300'
+                      selectedOpenSlots === num ? 'bg-blue-500 dark:bg-blue-400' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
                   />
                 ))}
@@ -432,8 +432,8 @@ const BookingCalendar: React.FC = () => {
 
         {/* Per Slot Price Input */}
         {selectedOpenSlots > 0 && (
-          <div className="mt-4 p-3 sm:p-4 bg-white rounded-lg border border-blue-200">
-            <label className="block text-xs sm:text-sm font-medium text-blue-800 mb-2">
+          <div className="mt-4 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-700">
+            <label className="block text-xs sm:text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
               Price Per Slot (₹) *
             </label>
             <input
@@ -445,9 +445,9 @@ const BookingCalendar: React.FC = () => {
               min="1"
               step="1"
               required
-              className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+              className="w-full px-3 py-2 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
             />
-            <p className="text-blue-700 text-xs sm:text-sm mt-2">
+            <p className="text-blue-700 dark:text-blue-300 text-xs sm:text-sm mt-2">
               <strong>{selectedOpenSlots} slots</strong> will be available for other players at ₹{perSlotPrice || 0} per slot
             </p>
           </div>
@@ -471,14 +471,14 @@ const BookingCalendar: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/')}
-          className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
+          className="mb-6 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to home
         </button>
-        <div className="text-center bg-white rounded-xl shadow-lg p-8 sm:p-12">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Error</h2>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">{error}</p>
+        <div className="text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">Error</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base">{error}</p>
           <button
             onClick={() => navigate('/')}
             className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
@@ -499,14 +499,14 @@ const BookingCalendar: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate(`/card/${id}`)}
-          className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium"
+          className="mb-6 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 font-medium"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to card details
         </button>
-        <div className="text-center bg-white rounded-xl shadow-lg p-8 sm:p-12">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Cannot Book This Card</h2>
-          <p className="text-gray-600 mb-6 text-sm sm:text-base">
+        <div className="text-center bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-12">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">Cannot Book This Card</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base">
             {getBookingErrorMessage()}
           </p>
           <button
@@ -528,29 +528,29 @@ const BookingCalendar: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <button
         onClick={() => navigate(`/card/${id}`)}
-        className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium"
+        className="mb-6 inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 font-medium"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to card details
       </button>
 
-      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Book {card.title}</h1>
-          <p className="text-gray-600 text-sm sm:text-base">Select a date and time slots for your booking</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">Book {card.title}</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">Select a date and time slots for your booking</p>
           {card.pricePerHour && (
-            <p className="text-base sm:text-lg font-semibold text-green-600 mt-2">₹{card.pricePerHour} per hour</p>
+            <p className="text-base sm:text-lg font-semibold text-green-600 dark:text-green-400 mt-2">₹{card.pricePerHour} per hour</p>
           )}
         </div>
 
         {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
             <span className="text-sm sm:text-base">{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg">
             <span className="text-sm sm:text-base">{success}</span>
           </div>
         )}
@@ -558,32 +558,32 @@ const BookingCalendar: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Calendar Section */}
           <div>
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Calendar className="w-5 h-5 mr-2" />
               Select Date
             </h2>
-            <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-base sm:text-lg font-medium">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h3>
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h3>
                 <div className="flex space-x-2">
                   <button
                     onClick={handlePrevMonth}
-                    className="p-2 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-colors duration-200"
                   >
-                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
                   </button>
                   <button
                     onClick={handleNextMonth}
-                    className="p-2 hover:bg-gray-200 rounded-full transition-colors duration-200"
+                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-colors duration-200"
                   >
-                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
                   </button>
                 </div>
               </div>
               
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {weekdays.map(day => (
-                  <div key={day} className="h-6 sm:h-8 flex items-center justify-center text-xs text-gray-500 font-medium">
+                  <div key={day} className="h-6 sm:h-8 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 font-medium">
                     {day}
                   </div>
                 ))}
@@ -597,23 +597,23 @@ const BookingCalendar: React.FC = () => {
 
           {/* Time Slots Section */}
           <div>
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center">
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 flex items-center text-gray-900 dark:text-white">
               <Clock className="w-5 h-5 mr-2" />
               Select Time Slots
             </h2>
             
             {!selectedDate ? (
-              <div className="bg-gray-50 rounded-lg p-6 sm:p-8 text-center">
-                <p className="text-gray-500 text-sm sm:text-base">Please select a date first</p>
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 sm:p-8 text-center">
+                <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">Please select a date first</p>
               </div>
             ) : (
-              <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 sm:p-6">
                 <div className="mb-4">
-                  <p className="text-xs sm:text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     Selected date: <span className="font-medium">{selectedDate.toLocaleDateString()}</span>
                   </p>
                   {selectedTimeSlots.length > 0 && (
-                    <p className="text-xs sm:text-sm text-blue-600 mt-1">
+                    <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 mt-1">
                       {selectedTimeSlots.length} slot{selectedTimeSlots.length > 1 ? 's' : ''} selected
                     </p>
                   )}
@@ -628,10 +628,10 @@ const BookingCalendar: React.FC = () => {
                       className={`
                         p-2 sm:p-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center justify-between
                         ${!slot.available 
-                          ? 'bg-red-100 text-red-400 cursor-not-allowed' 
+                          ? 'bg-red-100 dark:bg-red-900/20 text-red-400 dark:text-red-500 cursor-not-allowed' 
                           : selectedTimeSlots.includes(slot.time)
-                            ? 'bg-blue-500 text-white hover:bg-blue-600'
-                            : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
+                            ? 'bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-700'
+                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-gray-200 dark:border-gray-600'
                         }
                       `}
                     >
@@ -643,7 +643,7 @@ const BookingCalendar: React.FC = () => {
                 </div>
                 
                 {timeSlots.length === 0 && (
-                  <p className="text-center text-gray-500 py-4 text-sm">No time slots available</p>
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4 text-sm">No time slots available</p>
                 )}
               </div>
             )}
@@ -655,9 +655,9 @@ const BookingCalendar: React.FC = () => {
 
         {/* Booking Summary and Confirm Button */}
         {selectedDate && selectedTimeSlots.length > 0 && (
-          <div className="mt-6 sm:mt-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 sm:p-6 border border-blue-200">
-            <h3 className="text-base sm:text-lg font-semibold mb-4 text-blue-800">Booking Summary</h3>
-            <div className="space-y-2 mb-4 sm:mb-6 text-sm sm:text-base">
+          <div className="mt-6 sm:mt-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-4 sm:p-6 border border-blue-200 dark:border-blue-700">
+            <h3 className="text-base sm:text-lg font-semibold mb-4 text-blue-800 dark:text-blue-300">Booking Summary</h3>
+            <div className="space-y-2 mb-4 sm:mb-6 text-sm sm:text-base text-gray-700 dark:text-gray-300">
               <p><span className="font-medium">Card:</span> {card.title}</p>
               <p><span className="font-medium">Date:</span> {selectedDate.toLocaleDateString()}</p>
               <p><span className="font-medium">Time Slots:</span> {selectedTimeSlots.join(', ')}</p>
@@ -665,14 +665,14 @@ const BookingCalendar: React.FC = () => {
               {card.pricePerHour && (
                 <>
                   <p><span className="font-medium">Price per Hour:</span> ₹{card.pricePerHour}</p>
-                  <p><span className="font-medium">Total Amount:</span> <span className="text-green-600 font-bold">₹{selectedTimeSlots.length * card.pricePerHour}</span></p>
+                  <p><span className="font-medium">Total Amount:</span> <span className="text-green-600 dark:text-green-400 font-bold">₹{selectedTimeSlots.length * card.pricePerHour}</span></p>
                 </>
               )}
               {selectedOpenSlots > 0 && (
                 <>
                   <p><span className="font-medium">Open Slots for Others:</span> {selectedOpenSlots}</p>
                   <p><span className="font-medium">Price per Slot:</span> ₹{perSlotPrice}</p>
-                  <p><span className="font-medium">Potential Revenue:</span> <span className="text-green-600">₹{selectedOpenSlots * perSlotPrice}</span></p>
+                  <p><span className="font-medium">Potential Revenue:</span> <span className="text-green-600 dark:text-green-400">₹{selectedOpenSlots * perSlotPrice}</span></p>
                 </>
               )}
             </div>
@@ -686,13 +686,13 @@ const BookingCalendar: React.FC = () => {
             </button>
             
             {!user && (
-              <p className="text-center text-red-600 text-xs sm:text-sm mt-2">
+              <p className="text-center text-red-600 dark:text-red-400 text-xs sm:text-sm mt-2">
                 Please log in to make a booking
               </p>
             )}
 
             {selectedOpenSlots > 0 && perSlotPrice <= 0 && (
-              <p className="text-center text-red-600 text-xs sm:text-sm mt-2">
+              <p className="text-center text-red-600 dark:text-red-400 text-xs sm:text-sm mt-2">
                 Please set a valid price per slot
               </p>
             )}

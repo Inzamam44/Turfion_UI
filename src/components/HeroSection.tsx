@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { LiquidButton } from "./ui/liquid-glass-button.tsx";
@@ -15,7 +16,7 @@ const HeroSection: React.FC = () => {
   const [heroData, setHeroData] = useState<HeroData>({
     title: 'Welcome to TURFION',
     subtitle: 'Discover and book amazing sports venues and activities',
-    backgroundImage: 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    backgroundImage: 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1',
     buttonText: 'Explore Now',
     buttonLink: '#cards'
   });
@@ -27,6 +28,10 @@ const HeroSection: React.FC = () => {
         const heroDoc = await getDoc(doc(db, 'settings', 'hero'));
         if (heroDoc.exists()) {
           const data = heroDoc.data() as HeroData;
+          // Optimize image URL if it's from Pexels
+          if (data.backgroundImage && data.backgroundImage.includes('pexels.com')) {
+            data.backgroundImage = data.backgroundImage.replace(/w=\d+&h=\d+&dpr=\d+/, 'w=800&h=600&dpr=1');
+          }
           setHeroData(data);
         }
       } catch (error) {
@@ -36,7 +41,9 @@ const HeroSection: React.FC = () => {
       }
     };
 
-    fetchHeroData();
+    // Delay fetch to improve perceived performance
+    const timeoutId = setTimeout(fetchHeroData, 50);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleButtonClick = () => {
@@ -50,6 +57,10 @@ const HeroSection: React.FC = () => {
     }
   };
 
+  // Call motion hooks on every render to keep hooks order stable
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 300], [0, 30]);
+
   if (loading) {
     return (
       <div className="relative h-64 sm:h-80 md:h-96 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-xl mb-12">
@@ -61,32 +72,36 @@ const HeroSection: React.FC = () => {
   }
 
   return (
-    <div className="relative h-64 sm:h-80 md:h-96 rounded-xl overflow-hidden mb-12 shadow-2xl">
-      {/* Background Image */}
-      <div 
+    <div className="relative h-[70vh] min-h-80 rounded-[1.25rem] overflow-hidden mb-12 mt-4 shadow-[0_20px_60px_rgba(13,71,161,0.25)]">
+      {/* Motion Background */}
+      <motion.div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroData.backgroundImage})` }}
+        style={{ backgroundImage: `url(${heroData.backgroundImage})`, y }}
       >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-      </div>
-      
+        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/30 to-background/10" />
+        <div className="absolute -inset-40 bg-[radial-gradient(ellipse_at_top,_rgba(0,229,255,0.25),_transparent_60%)]" />
+        <div className="absolute -inset-40 bg-[radial-gradient(ellipse_at_bottom,_rgba(13,71,161,0.25),_transparent_60%)]" />
+      </motion.div>
+
       {/* Content */}
-      <div className="relative h-full flex items-center justify-center text-center text-white px-4">
-        <div className="max-w-4xl">
-          <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold mb-4 leading-tight" style={{ fontFamily: 'Anton, sans-serif' }}>
+      <div className="relative h-full flex items-center justify-center text-center px-4">
+        <motion.div 
+          className="max-w-4xl"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight bg-clip-text text-transparent bg-[linear-gradient(90deg,hsl(217_89%_45%),hsl(211_86%_55%),hsl(192_100%_50%))]" style={{ fontFamily: 'Amaranth, sans-serif' }}>
             {heroData.title}
           </h1>
-          <p className="text-sm sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-200 leading-relaxed px-4" style={{ fontFamily: 'Inter, sans-serif' }}>
+          <p className="text-base sm:text-xl md:text-2xl mb-8 text-foreground/80 leading-relaxed px-2" style={{ fontFamily: 'Lato, sans-serif' }}>
             {heroData.subtitle}
           </p>
-          <button
-            onClick={handleButtonClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 sm:py-4 sm:px-8 rounded-lg text-sm sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-            style={{ fontFamily: 'Inter, sans-serif' }}
-          >
+          <LiquidButton onClick={handleButtonClick} className="rounded-full">
             {heroData.buttonText}
-            </button>
-        </div>
+          </LiquidButton>
+        </motion.div>
       </div>
     </div>
   );

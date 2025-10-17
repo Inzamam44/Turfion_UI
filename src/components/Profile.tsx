@@ -258,7 +258,7 @@ const Profile: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Please log in to view your profile</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Please log in to view your profile</h2>
         </div>
       </div>
     );
@@ -307,13 +307,13 @@ const Profile: React.FC = () => {
 
         {/* Success/Error Messages */}
         {success && (
-          <div className="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg">
             {success}
           </div>
         )}
 
         {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          <div className="mb-6 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
@@ -322,9 +322,9 @@ const Profile: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Profile Card */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sm:p-8">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
-                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Profile Information</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Profile Information</h2>
                 {!isEditing ? (
                   <button
                     onClick={handleEdit}
@@ -355,22 +355,22 @@ const Profile: React.FC = () => {
               </div>
               
               <div className="space-y-6">
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-blue-600" />
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">Email Address</h3>
-                    <p className="text-gray-600 break-all">{user.email}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Email Address</h3>
+                    <p className="text-gray-600 dark:text-gray-400 break-all">{user.email}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Camera className="w-6 h-6 text-purple-600" />
+                <div className="flex items-start space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                    <Camera className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">Profile Picture</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Profile Picture</h3>
                     {isEditing ? (
                       <div className="space-y-3">
                         <input
@@ -378,11 +378,11 @@ const Profile: React.FC = () => {
                           value={editForm.photoURL || ''}
                           onChange={(e) => handleInputChange('photoURL', e.target.value)}
                           placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-                          className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                         {editForm.photoURL && (
                           <div className="flex items-center space-x-3">
-                            <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                            <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
                               {!imageError ? (
                                 <img
                                   src={editForm.photoURL}
@@ -392,28 +392,28 @@ const Profile: React.FC = () => {
                                   onLoad={handleImageLoad}
                                 />
                               ) : (
-                                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                                  <Image className="w-6 h-6 text-gray-400" />
+                                <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                  <Image className="w-6 h-6 text-gray-400 dark:text-gray-500" />
                                 </div>
                               )}
                             </div>
                             <div className="text-sm">
                               {imageError ? (
-                                <span className="text-red-600">Invalid image URL</span>
+                                <span className="text-red-600 dark:text-red-400">Invalid image URL</span>
                               ) : (
-                                <span className="text-green-600">Preview</span>
+                                <span className="text-green-600 dark:text-green-400">Preview</span>
                               )}
                             </div>
                           </div>
                         )}
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           Enter a direct link to an image (JPG, PNG, GIF). The image should be publicly accessible.
                         </p>
                       </div>
                     ) : (
                       <div className="flex items-center space-x-3">
                         {profile.photoURL && !imageError ? (
-                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                          <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
                             <img
                               src={profile.photoURL}
                               alt="Profile"
@@ -422,71 +422,71 @@ const Profile: React.FC = () => {
                             />
                           </div>
                         ) : (
-                          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
-                            <User className="w-8 h-8 text-gray-400" />
+                          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600">
+                            <User className="w-8 h-8 text-gray-400 dark:text-gray-500" />
                           </div>
                         )}
-                        <p className="text-gray-600">{profile.photoURL ? 'Custom image set' : 'No image set'}</p>
+                        <p className="text-gray-600 dark:text-gray-400">{profile.photoURL ? 'Custom image set' : 'No image set'}</p>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <User className="w-6 h-6 text-green-600" />
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">Display Name</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Display Name</h3>
                     {isEditing ? (
                       <input
                         type="text"
                         value={editForm.displayName || ''}
                         onChange={(e) => handleInputChange('displayName', e.target.value)}
                         placeholder="Enter your display name"
-                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       />
                     ) : (
-                      <p className="text-gray-600">{profile.displayName || 'Not set'}</p>
+                      <p className="text-gray-600 dark:text-gray-400">{profile.displayName || 'Not set'}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-yellow-600" />
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">Phone Number</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Phone Number</h3>
                     {isEditing ? (
                       <input
                         type="tel"
                         value={editForm.phoneNumber || ''}
                         onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                         placeholder="Enter your phone number"
-                        className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full mt-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       />
                     ) : (
-                      <p className="text-gray-600">{profile.phoneNumber || 'Not set'}</p>
+                      <p className="text-gray-600 dark:text-gray-400">{profile.phoneNumber || 'Not set'}</p>
                     )}
                   </div>
                 </div>
 
                 {/* MFA Section */}
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-orange-600" />
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">Multi-Factor Authentication</h3>
-                    <p className="text-gray-600 text-sm mb-2">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Multi-Factor Authentication</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
                       Add an extra layer of security to your account
                     </p>
                     <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                       <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                         profile.mfaEnabled 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
+                          : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                       }`}>
                         {profile.mfaEnabled ? 'Enabled' : 'Disabled'}
                       </span>
@@ -516,25 +516,25 @@ const Profile: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Security Info */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Security</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Security</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Email Verified</span>
+                  <span className="text-gray-600 dark:text-gray-400">Email Verified</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     user.emailVerified 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
+                      : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'
                   }`}>
                     {user.emailVerified ? 'Verified' : 'Pending'}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">MFA Status</span>
+                  <span className="text-gray-600 dark:text-gray-400">MFA Status</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                     profile.mfaEnabled 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
                   }`}>
                     {profile.mfaEnabled ? 'Enabled' : 'Disabled'}
                   </span>
@@ -544,12 +544,12 @@ const Profile: React.FC = () => {
 
             {/* MFA Help */}
             {profile.mfaEnabled && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-xl p-4">
                 <div className="flex items-start">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600 mr-3 mt-0.5" />
+                  <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mr-3 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-semibold text-yellow-800">MFA Issues?</h4>
-                    <p className="text-sm text-yellow-700 mt-1 mb-3">
+                    <h4 className="text-sm font-semibold text-yellow-800 dark:text-yellow-300">MFA Issues?</h4>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1 mb-3">
                       If you've lost access to your authenticator app or device, you can request an MFA reset from administrators.
                     </p>
                     <button
@@ -569,33 +569,33 @@ const Profile: React.FC = () => {
       {/* MFA Verification Modal */}
       {showMfaVerification && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Verify Changes</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Verify Changes</h2>
               <button
                 onClick={() => {
                   setShowMfaVerification(false);
                   setMfaCode('');
                   setPendingChanges(null);
                 }}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
             <div className="p-6">
               <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">MFA Verification Required</h3>
-                <p className="text-gray-600">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">MFA Verification Required</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Enter your MFA code to confirm profile changes
                 </p>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Enter 6-digit code from Google Authenticator
                 </label>
                 <input
@@ -604,7 +604,7 @@ const Profile: React.FC = () => {
                   maxLength={6}
                   value={mfaCode}
                   onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-lg font-mono"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center text-lg font-mono bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -622,7 +622,7 @@ const Profile: React.FC = () => {
                     setMfaCode('');
                     setPendingChanges(null);
                   }}
-                  className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-medium"
+                  className="w-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-6 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 font-medium"
                 >
                   Cancel
                 </button>
