@@ -176,6 +176,8 @@ const CardDetails: React.FC = () => {
             src={card.imageUrl}
             alt={card.title}
             className="w-full h-full object-cover"
+             loading="lazy"
+             decoding="async"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';

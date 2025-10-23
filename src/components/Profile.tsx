@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { User, Mail, Phone, Edit, Save, X, Shield, Settings, Camera, Image, AlertTriangle } from 'lucide-react';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getDbAsync } from '../lib/firebase';
 
 interface UserProfile {
   displayName?: string;
@@ -14,7 +13,7 @@ interface UserProfile {
 }
 
 const Profile: React.FC = () => {
-  const { user, userProfile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<UserProfile>({
@@ -43,7 +42,13 @@ const Profile: React.FC = () => {
       if (!user) return;
 
       try {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const firestore = await getDbAsync();
+        if (!firestore) {
+          setLoading(false);
+          return;
+        }
+        const { doc, getDoc } = await import('firebase/firestore');
+        const userDoc = await getDoc(doc(firestore, 'users', user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const profileData = {
@@ -185,7 +190,14 @@ const Profile: React.FC = () => {
     setSuccess('');
 
     try {
-      await updateDoc(doc(db, 'users', user!.uid), {
+      const firestore = await getDbAsync();
+      if (!firestore) {
+        setError('Database not available');
+        setSaving(false);
+        return;
+      }
+      const { doc, updateDoc } = await import('firebase/firestore');
+      await updateDoc(doc(firestore, 'users', user!.uid), {
         displayName: changes.displayName || '',
         phoneNumber: changes.phoneNumber || '',
         photoURL: changes.photoURL || '',
@@ -390,6 +402,8 @@ const Profile: React.FC = () => {
                                   className="w-full h-full object-cover"
                                   onError={handleImageError}
                                   onLoad={handleImageLoad}
+                                  loading="lazy"
+                                  decoding="async"
                                 />
                               ) : (
                                 <div className="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
@@ -419,6 +433,8 @@ const Profile: React.FC = () => {
                               alt="Profile"
                               className="w-full h-full object-cover"
                               onError={handleImageError}
+                              loading="lazy"
+                              decoding="async"
                             />
                           </div>
                         ) : (

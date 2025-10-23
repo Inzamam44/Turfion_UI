@@ -46,6 +46,8 @@ const SportsGroundDetails: React.FC<Props> = ({ grounds }) => {
               src={ground.image}
               alt={ground.name}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">

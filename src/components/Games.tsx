@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, onSnapshot, query, where, doc, getDoc, updateDoc, getDocs, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, doc, getDoc, updateDoc, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { Clock, Users, Calendar, MapPin, X, LogIn, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -75,17 +75,22 @@ const Games: React.FC = () => {
 
         const unsubscribe = onSnapshot(q, async (querySnapshot) => {
           const gamesData: GameBooking[] = [];
-          
-          for (const docSnapshot of querySnapshot.docs) {
-            const bookingData = {
-              id: docSnapshot.id,
-              ...docSnapshot.data()
-            } as GameBooking;
 
-            // Fetch card details for each booking
-            try {
-              const cardDoc = await getDoc(doc(db, 'cards', bookingData.cardId));
-              if (cardDoc.exists()) {
+          // Map bookings into objects and prepare card fetches
+          const bookingEntries = querySnapshot.docs.map((docSnapshot) => {
+            const bookingData = { id: docSnapshot.id, ...docSnapshot.data() } as GameBooking;
+            return bookingData;
+          });
+
+          // Fetch all card docs in parallel to avoid serial awaits
+          try {
+            const cardFetches = bookingEntries.map(b => getDoc(doc(db, 'cards', b.cardId)));
+            const cardDocs = await Promise.all(cardFetches);
+
+            for (let i = 0; i < bookingEntries.length; i++) {
+              const bookingData = bookingEntries[i];
+              const cardDoc = cardDocs[i];
+              if (cardDoc && cardDoc.exists()) {
                 const cardData = cardDoc.data();
                 bookingData.cardTitle = cardData.title;
                 bookingData.cardType = cardData.type;
@@ -95,15 +100,15 @@ const Games: React.FC = () => {
                 bookingData.cardLocation = cardData.location;
                 bookingData.cardPricePerHour = cardData.pricePerHour;
               }
-            } catch (cardError) {
-              console.error('Error fetching card details:', cardError);
-            }
 
-            // Only include future games
-            const gameDateTime = new Date(bookingData.date + ' ' + bookingData.timeSlot);
-            if (gameDateTime > new Date()) {
-              gamesData.push(bookingData);
+              // Only include future games
+              const gameDateTime = new Date(bookingData.date + ' ' + bookingData.timeSlot);
+              if (gameDateTime > new Date()) {
+                gamesData.push(bookingData);
+              }
             }
+          } catch (cardError) {
+            console.error('Error fetching card details:', cardError);
           }
 
           // Sort by date and time (soonest first)
@@ -754,6 +759,8 @@ const Games: React.FC = () => {
                         src={game.cardImageUrl} 
                         alt={game.cardTitle} 
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';

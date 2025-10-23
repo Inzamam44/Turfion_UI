@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { X, Download, Share2, Calendar, Clock, MapPin, CreditCard, QrCode, ArrowLeft } from 'lucide-react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { X, Download, Share2, Calendar, Clock, MapPin, QrCode, ArrowLeft } from 'lucide-react';
+import { getDbAsync, getStorageAsync } from '../lib/firebase';
 import html2canvas from 'html2canvas';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../lib/firebase';
 
 interface BookingReceiptProps {
   booking?: {
@@ -53,20 +50,23 @@ const BookingReceipt: React.FC<BookingReceiptProps> = ({ booking: propBooking, o
 
     try {
       setLoading(true);
-      const bookingDoc = await getDoc(doc(db, 'bookings', id));
+  const firestore = await getDbAsync();
+  if (!firestore) return;
+  const { doc, getDoc } = await import('firebase/firestore');
+  const bookingDoc = await getDoc(doc(firestore, 'bookings', id));
       
       if (bookingDoc.exists()) {
         const bookingData = bookingDoc.data();
         
         // Fetch card details
-        const cardDoc = await getDoc(doc(db, 'cards', bookingData.cardId));
-        let cardData = {};
+  const cardDoc = await getDoc(doc(firestore, 'cards', bookingData.cardId));
+        let cardData: any = {};
         if (cardDoc.exists()) {
           cardData = cardDoc.data();
         }
 
         // Fetch user details
-        const userDoc = await getDoc(doc(db, 'users', bookingData.userId));
+  const userDoc = await getDoc(doc(firestore, 'users', bookingData.userId));
         let userEmail = 'user@example.com';
         if (userDoc.exists()) {
           const userData = userDoc.data();
@@ -89,7 +89,7 @@ const BookingReceipt: React.FC<BookingReceiptProps> = ({ booking: propBooking, o
           
           if (!perSlotPrice && bookingData.originalBookingId) {
             try {
-              const originalBookingDoc = await getDoc(doc(db, 'bookings', bookingData.originalBookingId));
+              const originalBookingDoc = await getDoc(doc(firestore, 'bookings', bookingData.originalBookingId));
               if (originalBookingDoc.exists()) {
                 const originalData = originalBookingDoc.data();
                 perSlotPrice = originalData.perSlotPrice || 0;
@@ -194,7 +194,9 @@ const BookingReceipt: React.FC<BookingReceiptProps> = ({ booking: propBooking, o
         if (blob) {
           try {
             // Upload to Firebase Storage
-            const storageRef = ref(storage, `receipts/${booking.id}.png`);
+            const storageInstance = await getStorageAsync();
+            const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+            const storageRef = ref(storageInstance, `receipts/${booking.id}.png`);
             await uploadBytes(storageRef, blob);
             const downloadURL = await getDownloadURL(storageRef);
             
@@ -320,6 +322,8 @@ const BookingReceipt: React.FC<BookingReceiptProps> = ({ booking: propBooking, o
             src={qrCodeUrl} 
             alt="Booking QR Code" 
             className="mx-auto mb-2 border border-gray-200 rounded"
+            loading="lazy"
+            decoding="async"
           />
           <p className="text-xs text-gray-500">Scan this QR code to view receipt image</p>
         </div>

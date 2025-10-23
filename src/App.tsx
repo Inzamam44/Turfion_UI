@@ -1,27 +1,26 @@
-import React, { useState, useRef, useEffect, Suspense, lazy } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState, useRef, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import HeroSection from './components/HeroSection';
-import Footer from './components/Footer';
-import LoadingSpinner from './components/LoadingSpinner';
-
-// Lazy load components for better performance
-const Login = lazy(() => import('./components/Login'));
-const SignUp = lazy(() => import('./components/SignUp'));
-const SportsGroundDetails = lazy(() => import('./components/SportsGroundDetails'));
+const HeroSection = lazy(() => import('./components/HeroSection'));
+const Footer = lazy(() => import('./components/Footer'));
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const Games = lazy(() => import('./components/Games'));
 const CardDetails = lazy(() => import('./components/CardDetails'));
 const BookingCalendar = lazy(() => import('./components/BookingCalendar'));
 const BookingReceipt = lazy(() => import('./components/BookingReceipt'));
+import LoadingSpinner from './components/LoadingSpinner';
+// Additional lazy-loaded components
+const Login = lazy(() => import('./components/Login'));
+const SignUp = lazy(() => import('./components/SignUp'));
+const SportsGroundDetails = lazy(() => import('./components/SportsGroundDetails'));
 const Profile = lazy(() => import('./components/Profile'));
 const MfaSettings = lazy(() => import('./components/MfaSettings'));
-const Dashboard = lazy(() => import('./components/Dashboard'));
 const CommunityCards = lazy(() => import('./components/CommunityCards'));
-const Games = lazy(() => import('./components/Games'));
 import { useAuth } from './contexts/AuthContext';
 import { LogOut, User, ChevronDown, BarChart3, LogIn, Menu, X, Shield, AlertTriangle } from 'lucide-react';
 import { SportsGround } from './types';
 import { isFirebaseInitialized } from './lib/firebase';
-import { Component as EtheralShadow } from './components/ui/etheral-shadow';
+// Lazy-load heavy visual component to defer its bundle until after initial render
+const EtheralShadow = lazy(() => import('./components/ui/etheral-shadow').then(mod => ({ default: mod.Component })));
 import { ThemeToggle } from './components/ui/theme-toggle';
 import BrandLogo from './images/logo.png';
 
@@ -228,7 +227,7 @@ function App() {
   };
 
   const getRoleTag = (role: string) => {
-    const roleColors = {
+    const roleColors: Record<string, string> = {
       user: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300',
       host: 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300',
       admin: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
@@ -454,6 +453,8 @@ function App() {
                     src={BrandLogo}
                     alt="Turfion"
                     className="h-6 sm:h-7 object-contain"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       const target = e.currentTarget as HTMLImageElement;
                       target.style.display = 'none';
@@ -487,6 +488,8 @@ function App() {
                               src={userProfile.photoURL}
                               alt="Profile"
                               className="w-full h-full object-cover"
+                              loading="lazy"
+                              decoding="async"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.style.display = 'none';
@@ -560,41 +563,34 @@ function App() {
           ) : requiresAuth && !user ? (
             <LoginPrompt />
           ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
-              >
-                <Suspense fallback={<LoadingSpinner size="lg" className="min-h-screen" />}>
-                  <Routes location={location}>
-                    <Route path="/ground/:id" element={<SportsGroundDetails grounds={sportsGrounds} />} />
-                    <Route path="/card/:id" element={<CardDetails />} />
-                    <Route path="/book/:id" element={<BookingCalendar />} />
-                    <Route path="/receipt/:id" element={<BookingReceipt isModal={false} />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/mfa-settings" element={<MfaSettings />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/games" element={<Games />} />
-                    <Route path="/" element={
-                      <div className="container mx-auto px-4 py-8">
-                        {/* Hero Section */}
-                        <HeroSection />
-                        
-                        {/* Community Cards Section */}
-                        <div id="cards">
-                          <Suspense fallback={<LoadingSpinner size="md" className="py-12" />}>
-                            <CommunityCards />
-                          </Suspense>
-                        </div>
+            // Lightweight transition wrapper (avoids loading framer-motion on startup).
+            <div key={location.pathname} className="transition-all duration-200">
+              <Suspense fallback={<LoadingSpinner size="lg" className="min-h-screen" />}>
+                <Routes location={location}>
+                  <Route path="/ground/:id" element={<SportsGroundDetails grounds={sportsGrounds} />} />
+                  <Route path="/card/:id" element={<CardDetails />} />
+                  <Route path="/book/:id" element={<BookingCalendar />} />
+                  <Route path="/receipt/:id" element={<BookingReceipt isModal={false} />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/mfa-settings" element={<MfaSettings />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/games" element={<Games />} />
+                  <Route path="/" element={
+                    <div className="container mx-auto px-4 py-8">
+                      {/* Hero Section */}
+                      <HeroSection />
+                      
+                      {/* Community Cards Section */}
+                      <div id="cards">
+                        <Suspense fallback={<LoadingSpinner size="md" className="py-12" />}>
+                          <CommunityCards />
+                        </Suspense>
                       </div>
-                    } />
-                  </Routes>
-                </Suspense>
-              </motion.div>
-            </AnimatePresence>
+                    </div>
+                  } />
+                </Routes>
+              </Suspense>
+            </div>
           )}
         </div>
 

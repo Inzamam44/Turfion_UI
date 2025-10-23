@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
-import { collection, onSnapshot, query, where, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { getDbAsync } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Clock, Edit, Save, X, Trash2, MapPin, DollarSign, Image, FileText } from 'lucide-react';
-import { GlowCard } from './ui/spotlight-card';
+import { Clock, Edit, Save, X, Trash2, MapPin, DollarSign, Image, FileText, Globe, Users, Star, Zap, Shield } from 'lucide-react';
+const Card3D = React.lazy(() => import('./ui/animated-3d-card').then(m => ({ default: m.Card3D })));
+import { Suspense } from 'react';
 
 type CardData = {
   id: string;
@@ -45,52 +45,80 @@ export default function CardList() {
   const timeOptions = generateTimeOptions();
 
   useEffect(() => {
-    if (!user) {
-      setCards([]);
-      setLoading(false);
-      return;
-    }
+    let cancelled = false;
 
-    let q;
-    if (hasRole('admin')) {
-      // Admins can see all cards
-      q = query(collection(db, 'cards'));
-    } else if (hasRole('host')) {
-      // Hosts can see cards assigned to them
-      q = query(
-        collection(db, 'cards'),
-        where('assignedHost', '==', user.uid)
+    const setupListener = async () => {
+      if (!user) {
+        setCards([]);
+        setLoading(false);
+        return;
+      }
+
+      const firestore = await getDbAsync();
+      if (!firestore) {
+        setCards([]);
+        setLoading(false);
+        return;
+      }
+
+      const { collection, onSnapshot, query, where } = await import('firebase/firestore');
+
+      let q;
+      if (hasRole('admin')) {
+        q = query(collection(firestore, 'cards'));
+      } else if (hasRole('host')) {
+        q = query(collection(firestore, 'cards'), where('assignedHost', '==', user.uid));
+      } else {
+        q = query(collection(firestore, 'cards'), where('userId', '==', user.uid));
+      }
+
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          if (cancelled) return;
+          const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() })) as CardData[];
+          items.sort((a, b) => {
+            const dateA = a.createdAt?.toDate?.() || new Date(0);
+            const dateB = b.createdAt?.toDate?.() || new Date(0);
+            return dateB.getTime() - dateA.getTime();
+          });
+          setCards(items);
+          setLoading(false);
+        },
+        (error) => {
+          console.error('Error fetching cards:', error);
+          if (cancelled) return;
+          setLoading(false);
+        }
       );
-    } else {
-      // Regular users can see their own cards
-      q = query(
-        collection(db, 'cards'),
-        where('userId', '==', user.uid)
-      );
-    }
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as CardData[];
-      
-      // Sort by creation date (most recent first)
-      items.sort((a, b) => {
-        const dateA = a.createdAt?.toDate?.() || new Date(0);
-        const dateB = b.createdAt?.toDate?.() || new Date(0);
-        return dateB.getTime() - dateA.getTime();
-      });
-      
-      setCards(items);
-      setLoading(false);
-    }, (error) => {
-      console.error('Error fetching cards:', error);
-      setLoading(false);
-    });
+      return unsubscribe;
+    };
 
-    return () => unsubscribe();
+    let unsub: any;
+    setupListener().then((u) => (unsub = u)).catch((err) => console.error('Listener setup failed:', err));
+
+    return () => {
+      cancelled = true;
+      if (unsub) unsub();
+    };
   }, [user, hasRole]);
+
+  // Prefetch the animated card bundle once we have cards to render so the
+  // lazy-loaded Card3D appears quickly and reduces the time users see the
+  // fallback skeleton. This warms the module cache in the background.
+  useEffect(() => {
+    if (cards.length === 0) return;
+    // dynamic import to warm the bundle cache; ignore result
+    import('./ui/animated-3d-card')
+      .then(() => {
+        // prefetched
+      })
+      .catch((err) => {
+        // non-fatal, just log for debugging
+        console.debug('Prefetch Card3D failed:', err);
+      });
+  }, [cards.length]);
 
   const handleEditClick = (card: CardData) => {
     setEditingCard(card.id);
@@ -124,7 +152,10 @@ export default function CardList() {
 
     setSaving(true);
     try {
-      const cardRef = doc(db, 'cards', cardId);
+      const firestore = await getDbAsync();
+      if (!firestore) throw new Error('Firestore not available');
+      const { doc, updateDoc } = await import('firebase/firestore');
+      const cardRef = doc(firestore, 'cards', cardId);
       await updateDoc(cardRef, {
         title: editForm.title,
         imageUrl: editForm.imageUrl || '',
@@ -136,7 +167,7 @@ export default function CardList() {
         description: editForm.description || '',
         updatedAt: new Date()
       });
-      
+
       setEditingCard(null);
       setEditForm({});
     } catch (error) {
@@ -154,7 +185,10 @@ export default function CardList() {
 
     setDeleting(cardId);
     try {
-      await deleteDoc(doc(db, 'cards', cardId));
+      const firestore = await getDbAsync();
+      if (!firestore) throw new Error('Firestore not available');
+      const { doc, deleteDoc } = await import('firebase/firestore');
+      await deleteDoc(doc(firestore, 'cards', cardId));
     } catch (error) {
       console.error('Error deleting card:', error);
       alert('Failed to delete card. Please try again.');
@@ -178,6 +212,19 @@ export default function CardList() {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  // Map card types to lucide icons
+  const iconForType = (type: string | undefined) => {
+    if (!type) return Globe;
+    const t = type.toLowerCase();
+    if (t.includes('football') || t.includes('soccer')) return Users;
+    if (t.includes('cricket')) return Zap;
+    if (t.includes('tennis') || t.includes('badminton')) return Star;
+    if (t.includes('security') || t.includes('safe')) return Shield;
+    if (t.includes('community') || t.includes('global')) return Globe;
+    // default
+    return Globe;
+  };
+
   const canEditCard = (card: CardData): boolean => {
     if (hasRole('admin')) return true;
     if (hasRole('host') && card.assignedHost === user?.uid) return true;
@@ -185,7 +232,7 @@ export default function CardList() {
     return false;
   };
 
-  const canDeleteCard = (card: CardData): boolean => {
+  const canDeleteCard = (_card: CardData): boolean => {
     return hasRole('admin');
   };
 
@@ -218,11 +265,11 @@ export default function CardList() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {cards.map((card) => (
-        <GlowCard key={card.id} className="relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-1005">
+        <div key={card.id} className="relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-1005">
           <div onClick={() => handleCardClick(card.id)}>
-            <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
+            <div className="relative bg-gray-200 dark:bg-gray-700">
               {editingCard === card.id ? (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
                   <div className="w-full">
@@ -241,15 +288,17 @@ export default function CardList() {
                   </div>
                 </div>
               ) : (
-                <img 
-                  src={card.imageUrl} 
-                  alt={card.title} 
-                  className="w-full h-full object-cover cursor-pointer"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = 'https://images.pexels.com/photos/3657154/pexels-photo-3657154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
-                  }}
-                />
+                <Suspense fallback={<div className="h-80 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-lg" /> }>
+                  <Card3D
+                    title={card.title}
+                    description={card.description}
+                    image={card.imageUrl || undefined}
+                    icon={React.createElement(iconForType(card.type))}
+                    theme={"primary"}
+                    size={"md"}
+                    variant={"default"}
+                  />
+                </Suspense>
               )}
               <div className="absolute top-2 left-2">
                 {hasRole('admin') ? (
@@ -507,7 +556,7 @@ export default function CardList() {
               )}
             </div>
           </div>
-        </GlowCard>
+        </div>
       ))}
     </div>
   );

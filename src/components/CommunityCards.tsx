@@ -1,11 +1,9 @@
 import { useEffect, useState, useMemo } from 'react';
-import { db } from '../lib/firebase';
-import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
+import { getDbAsync } from '../lib/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Clock, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import SearchAndFilters, { FilterOptions } from './SearchAndFilters';
 import { GlowCard } from './ui/spotlight-card';
-import { LiquidButton } from "./ui/liquid-glass-button";
 import LoadingSpinner from './LoadingSpinner';
 
 type CardData = {
@@ -118,14 +116,21 @@ export default function CommunityCards() {
     let unsubscribe: (() => void) | null = null;
     let timeoutId: NodeJS.Timeout | null = null;
 
-    const setupRealtimeListener = () => {
+    const setupRealtimeListener = async () => {
       try {
         setLoading(true);
         setError('');
         
-        // Optimize query with limit and ordering
+        // Optimize query with limit and ordering (firestore functions loaded on demand)
+        const firestore = await getDbAsync();
+        if (!firestore) {
+          setError('Database not available');
+          setLoading(false);
+          return;
+        }
+        const { collection, onSnapshot, query, orderBy, limit } = await import('firebase/firestore');
         const q = query(
-          collection(db, 'cards'),
+          collection(firestore, 'cards'),
           orderBy('createdAt', 'desc'),
           limit(50) // Reduced limit for better performance
         );

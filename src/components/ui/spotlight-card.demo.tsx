@@ -9,13 +9,13 @@ export function Default() {
           <p className="text-gray-600">This is a demo card with a spotlight effect</p>
         </div>
       </GlowCard>
-      <GlowCard glowColor="purple">
+      <GlowCard>
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold">Card 2</h2>
           <p className="text-gray-600">Purple spotlight variant</p>
         </div>
       </GlowCard>
-      <GlowCard glowColor="green" size="lg">
+      <GlowCard className="w-96">
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold">Card 3</h2>
           <p className="text-gray-600">Large green spotlight variant</p>

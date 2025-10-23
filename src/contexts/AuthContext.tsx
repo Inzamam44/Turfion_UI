@@ -30,6 +30,7 @@ interface AuthContextType {
   user: User | null;
   userProfile: UserProfile | null;
   loading: boolean;
+  initializing: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -53,6 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  // initializing indicates the auth/profile background setup is in progress
+  const [initializing, setInitializing] = useState(true);
   const [firebaseError, setFirebaseError] = useState<string | null>(null);
   const [profileUnsubscribe, setProfileUnsubscribe] = useState<(() => void) | null>(null);
 
@@ -102,46 +105,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       // Clean up previous profile listener
       if (profileUnsubscribe) {
         profileUnsubscribe();
         setProfileUnsubscribe(null);
       }
 
+      // Set user immediately so UI can render as soon as possible
       setUser(user);
-      
-      if (user) {
-        try {
-          // Set up real-time listener for user profile
-          const userRef = doc(db, 'users', user.uid);
-          
-          // First, ensure profile exists
-          await createUserProfile(user);
-          
-          // Then set up real-time listener
-          const unsubscribeProfile = onSnapshot(userRef, (doc) => {
-            if (doc.exists()) {
-              const profileData = doc.data() as UserProfile;
-              setUserProfile(profileData);
-            } else {
-              setUserProfile(null);
-            }
-          }, (error) => {
-            console.error('Error listening to user profile:', error);
-            setUserProfile(null);
-          });
 
-          setProfileUnsubscribe(() => unsubscribeProfile);
-        } catch (error) {
-          console.error('Error setting up user profile listener:', error);
-          setUserProfile(null);
-        }
+      if (user) {
+        // Initialize profile & onSnapshot listener in background so we don't block rendering
+        (async () => {
+          try {
+            if (!db) {
+              console.error('Firestore `db` is not available during auth profile initialization.');
+              setUserProfile(null);
+              return;
+            }
+
+            const userRef = doc(db, 'users', user.uid);
+            await createUserProfile(user);
+
+            const unsubscribeProfile = onSnapshot(userRef, (doc) => {
+              if (doc.exists()) {
+                const profileData = doc.data() as UserProfile;
+                setUserProfile(profileData);
+              } else {
+                setUserProfile(null);
+              }
+            }, (error) => {
+              console.error('Error listening to user profile:', error);
+              setUserProfile(null);
+            });
+
+            setProfileUnsubscribe(() => unsubscribeProfile);
+          } catch (error) {
+            console.error('Error setting up user profile listener:', error);
+            setUserProfile(null);
+          }
+        })();
       } else {
         setUserProfile(null);
       }
-      
+
+      // Mark that initial auth check ran; do not block rendering on this
       setLoading(false);
+      setInitializing(false);
     });
 
     return () => {
@@ -197,6 +208,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     userProfile,
     loading,
+    initializing,
     signIn,
     signUp,
     signInWithGoogle,
@@ -206,9 +218,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     firebaseError
   };
 
+  // Small skeleton overlay shown while auth is initializing to improve perceived performance
+  const AuthSkeleton = () => (
+    <div className="fixed inset-0 flex items-center justify-center z-[1000] pointer-events-none">
+      <div className="animate-pulse bg-white/60 dark:bg-gray-900/60 rounded-xl p-6 shadow-lg">Initializing...</div>
+    </div>
+  );
+
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
+      {initializing && <AuthSkeleton />}
     </AuthContext.Provider>
   );
 };

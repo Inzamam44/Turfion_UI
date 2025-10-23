@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getDbAsync } from '../lib/firebase';
 import { LiquidButton } from "./ui/liquid-glass-button.tsx";
 
 interface HeroData {
@@ -25,7 +24,13 @@ const HeroSection: React.FC = () => {
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
-        const heroDoc = await getDoc(doc(db, 'settings', 'hero'));
+        const firestore = await getDbAsync();
+        if (!firestore) {
+          setLoading(false);
+          return;
+        }
+        const { doc, getDoc } = await import('firebase/firestore');
+        const heroDoc = await getDoc(doc(firestore, 'settings', 'hero'));
         if (heroDoc.exists()) {
           const data = heroDoc.data() as HeroData;
           // Optimize image URL if it's from Pexels
