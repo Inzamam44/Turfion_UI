@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "analyze": "cross-env ANALYZE=true vite build",
-    "postinstall": "node -e \"/* noop postinstall for cross-platform compatibility */\"",
+  "postinstall": "node -e \"const { execSync } = require('child_process'); if (process.platform !== 'win32') { try { execSync('chmod +x node_modules/.bin/vite'); } catch(e) { /* ignore */ } } else { /* skip on Windows */ }\"",
     "lint": "eslint .",
     "preview": "vite preview"
   },
