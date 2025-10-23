@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist",
-        "buildCommand": "npx -y vite@7.1.12 build"
+        "buildCommand": "npm run ci:debug-vite && npx -y vite@7.1.12 build"
       }
     }
   ],

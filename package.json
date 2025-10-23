@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
   "dev": "vite",
-  "build": "npx vite build",
+  "build": "npx -y vite@7.1.12 build",
     "analyze": "cross-env ANALYZE=true vite build",
+    "ci:debug-vite": "node -e \"const fs=require('fs');const p='./node_modules/vite/dist/node';try{console.log('--- VITE DIST NODE CONTENTS START ---');fs.readdirSync(p).forEach(f=>console.log(f));console.log('--- VITE DIST NODE CONTENTS END ---');}catch(e){console.error('ERROR READING',p,e.message);}\"",
   "postinstall": "node -e \"const { execSync } = require('child_process'); if (process.platform !== 'win32') { try { execSync('chmod +x node_modules/.bin/vite'); } catch(e) { /* ignore */ } } else { /* skip on Windows */ }\"",
     "lint": "eslint .",
     "preview": "vite preview"
